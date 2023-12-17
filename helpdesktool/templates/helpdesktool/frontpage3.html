@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検索画面</title>
+    <link href="{% static 'helpdesktool/frontpage.css' %}" rel="stylesheet">
+
+</head> 
+<body>
+    <h1>検索画面</h1>
+
+    <form method="POST">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>管理番号：{{form.control_id}}</td>
+            <td>日時：{{form.f_day}}</td>
+            <td>会社名：{{form.company_name}}</td>
+            <td>対応者：{{form.name_id}}</td>
+        </tr>
+    </table>
+    <table>    
+        <tr>
+            <td colspan="3">検索文字：{{form.qa_contents}}</td>
+            <td><button type='submit'>検索</button></td>
+            {%for choice in form.order_of_display%}
+            <td>{{choice}} </td>
+            {%endfor%}
+            <td><form action="{% url 'frontpage'%}"></form><button>クリア</button></form></td>
+
+        </tr>
+
+    </table>
+    </form>
+
+
+    <h1><button><a href="{% url 'create'%}" target="_blank" rel="noopener noreferrer" >登録</a></button></h1>
+    <table class="table2 col4t">
+        <tr class="table2_tr">
+            <td>管理番号</td>
+            <td>日時</td>
+            <td>対応時間</td>
+            <td>会社名</td>
+            <td>対応者</td>
+        </tr>
+
+            <script>
+                var a = { {%for users in user_data %}
+                            {{users.user_id}}:"{{users.user_name}}",
+                        {% endfor %} }
+
+            </script>
+
+
+        {%for reg in regist%}
+        <tr>
+        
+            <td>{{reg.control_id}}</td>
+            <td>{{reg.first_time}}</td>
+            <td>{{reg.total_time}}</td>
+            <td>{{reg.company_name}}</td>
+            <td><script>document.write(a[{{reg.name_id}}]);</script></td>
+            
+        </tr>
+        <tr class="q_a">
+            <td colspan="2">{{reg.q_contents}}</td>
+            <td colspan="2">{{reg.a_contents}}</td>
+            <td><button><a href="{% url 'edit' reg.control_id %}">詳細</a></button><br>
+                <button><a href="{% url 'copy' reg.control_id%}">複写</a></button></h1>
+            </td> 
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    
+    
+</body>
+</html>

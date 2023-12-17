@@ -1,0 +1,123 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'helpdesktool/reg.css' %}" rel="stylesheet">
+    <title> 複写登録</title>
+</head>
+<body>
+
+    <form method="POST" id="myForm" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <h1>複写登録</h1>
+        <table>
+            <tr>
+                <td>開始日時:{{form.f_day}}</td>
+                <td>{{form.f_time}}</td>
+                <td>終了時間:{{form.e_day}}</td>
+                <td>{{form.e_time}}</td>
+                <td>対応時間:{{form.total_time}}</td>
+            </tr>
+        </table>
+    
+        <table>
+            <tr>
+                <td>対応者：{{form.name_id}}</td>
+                <td>会社名：{{form.company_name}}{{form.company_name.error}}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td>問い合わせ内容：</td>
+                <td>回答内容：</td>
+            </tr>
+            <tr>
+                <td>{{form.q_contents}}</td>
+                <td>{{form.a_contents}}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td>未解決：{{form.unsolved}}</td>
+            </tr>
+        </table>
+            
+        <button type='submit' class='btn btn-outline-primary'  target="_blank" rel="noopener">登録</button>
+
+    </form>
+
+        <script>
+            function calculateTotalTime() {
+                // Get start date and time values
+                var startDate = document.getElementById("id_f_day").value;
+                var startTime = document.getElementById("id_f_time").value;
+        
+                // Get end date and time values
+                var endDate = document.getElementById("id_e_day").value;
+                var endTime = document.getElementById("id_e_time").value;
+        
+                // Combine date and time for start and end
+                var startDateTime = new Date(startDate + " " + startTime);
+                var endDateTime = new Date(endDate + " " + endTime);
+        
+                // Calculate time difference in milliseconds
+                var timeDifference = endDateTime - startDateTime;
+        
+                // Convert milliseconds to minutes
+                var totalTimeInMinutes = timeDifference / (1000 * 60);
+        
+                // Update the total_time input field
+                document.getElementById("id_total_time").value = totalTimeInMinutes;
+            }
+
+            document.getElementById("id_f_day").onkeyup = calculateTotalTime;
+            document.getElementById("id_f_time").onkeyup = calculateTotalTime;
+            document.getElementById("id_e_day").onkeyup = calculateTotalTime;
+            document.getElementById("id_e_time").onkeyup = calculateTotalTime; 
+    
+    
+    
+    
+            function validateForm() {
+                // Get start date and time values
+                var startDate = document.getElementById("id_f_day").value;
+                var startTime = document.getElementById("id_f_time").value;
+        
+                // Get end date and time values
+                var endDate = document.getElementById("id_e_day").value;
+                var endTime = document.getElementById("id_e_time").value;
+        
+                // Combine date and time for start and end
+                var startDateTime = new Date(startDate + " " + startTime);
+                var endDateTime = new Date(endDate + " " + endTime);
+        
+                // Check if start date and time are greater than end date and time
+                if (startDateTime >= endDateTime) {
+                    alert('開始日時は終了日時より前である必要があります。');
+                    return false; // Prevent form submission
+                }
+        
+                // Check if total time is greater than 0
+                var totalTimeInput = document.getElementById('id_total_time');
+                var totalTimeValue = parseInt(totalTimeInput.value);
+        
+                if (totalTimeValue <= 0) {
+                    alert('対応時間は0より大きい値を入力してください。');
+                    return false; // Prevent form submission
+                }
+        
+                return true; // Allow form submission
+            }
+        
+            // Attach the validateForm function to the onsubmit event of the form
+            document.getElementById("myForm").onsubmit = validateForm;
+        </script> 
+
+    
+</body>
+</html>

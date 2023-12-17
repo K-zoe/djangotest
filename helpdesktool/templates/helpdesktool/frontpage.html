@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>検索画面</title>
+    <link href="{% static 'helpdesktool/frontpage.css' %}" rel="stylesheet">
+
+</head> 
+<body>
+    <h1>検索画面</h1>
+
+    <form method="POST">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>管理番号：{{form.control_id}}</td>
+            <td>日時：{{form.f_day}}</td>
+            <td>会社名：{{form.company_name}}</td>
+            <td>対応者：{{form.name_id}}</td>
+        </tr>
+    </table>
+    <table>    
+        <tr>
+            <td colspan="3">検索文字：{{form.qa_contents}}</td>
+            <td><button type='submit'>検索</button></td>
+            {%for choice in form.order_of_display%}
+            <td>{{choice}} </td>
+            {%endfor%}
+            <td><a href="{% url 'frontpage'%}"><button type="button">クリア</button></a></td>
+            <td><a href="{%url 'create'%}" target="_blank" rel="noopener noreferrer"><button type="button">登録</button></a></td>
+
+        </tr>
+
+    </table>
+    <!--</form>-->
+
+    {% if regist.has_other_pages %}
+    <nav aria-label="Page navigation example">
+      {% csrf_token %}
+      <input type="hidden" name="current_page" value="{{ regist.number }}">
+      <table class="pagination-table">
+        <tr>
+          {% if regist.has_previous %}
+            <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.previous_page_number }}"><<</button></td>
+          {% else %}
+            <td class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#"><<</div></td>
+          {% endif %}
+  
+          {% if regist.has_previous %}
+            {% if regist.previous_page_number != 1 %}
+              <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="1">1</button></td>
+              <td>…</td>
+            {% endif %}
+            <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.previous_page_number }}">{{ regist.previous_page_number }}</button></td>
+          {% endif %}
+          <td class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">{{ regist.number }}</div></td>
+          {% if regist.has_next %}
+            <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.next_page_number }}">{{ regist.next_page_number }}</button></td>
+            {% if regist.next_page_number != regist.paginator.num_pages %}
+              <td>…</td>
+              <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.paginator.num_pages }}">{{ regist.paginator.num_pages }}</button></td>
+            {% endif %}
+          {% endif %}
+          {% if regist.has_next %}
+            <td><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.next_page_number }}">>></button></td>
+          {% else %}
+            <td class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">>></div></td>
+          {% endif %}
+        </tr>
+      </table>
+    </nav>
+  {% endif %}
+
+  
+
+
+    <!--</form>-->
+    <table class="table2 col4t">
+        <tr class="table2_tr">
+            <td>管理番号</td>
+            <td>日時</td>
+            <td>対応時間</td>
+            <td>会社名</td>
+            <td>対応者</td>
+        </tr>
+
+            <script>
+                var a = { {%for users in user_data %}
+                            {{users.user_id}}:"{{users.user_name}}",
+                        {% endfor %} }
+
+            </script>
+
+
+        {%for reg in regist%}
+        <tr>
+        
+            <td>{{reg.control_id}}</td>
+            <td>{{reg.first_time}}</td>
+            <td>{{reg.total_time}}</td>
+            <td>{{reg.company_name}}</td>
+            <td><script>document.write(a[{{reg.name_id}}]);</script></td>
+            
+        </tr>
+        <tr class="q_a">
+            <td colspan="2">{{reg.q_contents}}</td>
+            <td colspan="2">{{reg.a_contents}}</td>
+            <td><button><a href="{% url 'edit' reg.control_id %}">詳細</a></button><br>
+                <button><a href="{% url 'copy' reg.control_id%}">複写</a></button></h1>
+            </td> 
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    
+
+    {% if regist.has_other_pages %}
+      <nav aria-label="Page navigation example">
+          {% csrf_token %}
+          <input type="hidden" name="current_page" value="{{ regist.number }}">
+          <ul class="pagination">
+            {% if regist.has_previous %}
+              <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.previous_page_number }}"><<</button></li>
+            {% else %}
+              <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#"><<</div></li>
+            {% endif %}
+  
+            {% if regist.has_previous %}
+              {% if regist.previous_page_number != 1 %}
+                <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="1">1</button></li>
+                <li>…</li>
+              {% endif %}
+              <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.previous_page_number }}">{{ regist.previous_page_number }}</button></li>
+            {% endif %}
+            <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">{{ regist.number }}</div></li>
+            {% if regist.has_next %}
+              <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.next_page_number }}">{{ regist.next_page_number }}</button></li>
+              {% if regist.next_page_number != regist.paginator.num_pages %}
+                <li>…</li>
+                <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.paginator.num_pages }}">{{ regist.paginator.num_pages }}</button></li>
+              {% endif %}
+            {% endif %}
+            {% if regist.has_next %}
+              <li><button type="submit" class="page-link text-primary d-inline-block" name="page" value="{{ regist.next_page_number }}">>></button></li>
+            {% else %}
+              <li class="disabled"><div class="page-link text-secondary d-inline-block disabled" href="#">>></div></li>
+            {% endif %}
+          </ul>
+
+      </nav>
+    {% endif %}
+
+    </form>
+    
+    
+</body>
+</html>
